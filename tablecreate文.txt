@@ -1,0 +1,15 @@
+
+1)従業員マスタテーブル
+
+CREATE TABLE `m_employee` (
+  `employee_id` smallint(5) NOT NULL COMMENT '従業員ID',
+  `name` varchar(20) NOT NULL COMMENT '従業員名',
+  `furigana` varchar(20) NOT NULL COMMENT 'フリガナ',
+  `birthday` date NOT NULL COMMENT '誕生日',
+  `department_cd` char(5) NOT NULL COMMENT '部署コード',
+  `address` varchar(80) NOT NULL COMMENT '住所',
+  `phone_num` varchar(10) NOT NULL COMMENT '電話番号',
+  `mail_address` varchar(30) NOT NULL COMMENT 'メールアドレス',
+  `update_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`employee_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='従業員マスタ'

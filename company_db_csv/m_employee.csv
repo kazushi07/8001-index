@@ -1,0 +1,5 @@
+"employee_id","name","furigana","birthday","department_cd","address","phone_num","mail_address","update_time"
+1001,"古屋丈人","フルヤタケト",1998/04/10,"A2   ","名古屋市中村区","0905364052","ofuruya@jbbwoc.juzmj",
+1002,"鮫島恒男","サメジマツネオ",1999/09/10,"A1   ","名古屋市緑区","0906730673","tsuneo035@google.com",
+2001,"松田日和","マツダヒヨリ",1995/06/12,"B1   ","稲沢市","0903343292","hiyori_matsuda@outlo",
+2002,"西野宏明","ニシノヒロアキ",1996/03/21,"B2   ","半田市","0905653126","hiroaki8860@google.c",
