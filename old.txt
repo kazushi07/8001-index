@@ -1,0 +1,30 @@
+//   //データベースに接続
+//   //consoleに出したい,log fileに出したい
+//   //passの設定とエラーログの掃き出しが必要
+//   $link = mysqli_connect('localhost', 'root', '');
+//   if(!$link){
+//     die('データベースに接続できません: ' );
+//   }
+//   print('<p>接続に成功しました。</p>');
+
+//   //データベースを選択する
+//   mysqli_select_db( $link,'company');
+
+//   /* 現在のデフォルトデータベース名を取得します */
+//   $result = mysqli_query($link, "SELECT DATABASE()");
+//   $row = mysqli_fetch_row($result);
+//   printf("Default database is %s.\n", $row[0]);
+  
+//   //SQLでselect結果を取得
+//   $sql = "SELECT department_name FROM m_department WHERE department_cd='A2' ";
+//   $result = mysqli_query($link,$sql);
+  
+//   //結果を文字列で表示したい
+//   $row = mysqli_fetch_row($result);
+//   printf("result is %s.\n", $row[0]);
+
+//   //DBから切断
+//   $close_flag = mysqli_close($link);
+//   if ($close_flag){
+//       print('<p>切断に成功しました。</p>');
+//   }

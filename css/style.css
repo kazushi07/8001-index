@@ -1,0 +1,50 @@
+body{
+    /* 画面全体の大きさを固定 */
+    width: 860px;
+    height: 450px;
+    font-family:'メイリオ', 'Meiryo', sans-serif;
+}
+
+.field_body{
+    background-color: whitesmoke;
+    border:solid 3px #191970;
+}
+
+nav{
+    text-align: center;
+    background-color: cornflowerblue;
+    font-weight: bold;
+    color: whitesmoke;
+    padding: 8 0 8 0px;
+}
+
+.btn-contents{
+    margin: 0 0 0 auto; 
+    /* border:solid 3px green; */
+    /* のちに右寄せ、floatまたはmarginで調節 */
+    /* float: right; */
+}
+
+.info-content{
+    /* border:solid 3px orange; */
+    padding: 10 30 5 10px;
+}
+
+/* メッセージ表示labelと部署名表示label以外を右寄せに */
+.lbl-memberInfo{
+    display: inline-block;
+    text-align: left;
+    width: 70px;
+}
+
+
+.top_label{
+    margin-top: 0;
+    background-color: #4169e1;
+    color: whitesmoke;
+    text-align: center;
+}
+
+.clear_button{
+    margin-top:10px;
+}
