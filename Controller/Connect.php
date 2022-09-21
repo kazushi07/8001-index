@@ -4,6 +4,7 @@ require_once('model\employee_select.php');
 require_once('model\employee_delete.php');
 require_once('model\employee_insert.php');
 require_once('model\employee_update.php');
+require_once('model\exits_check.php');
 
 class ConnectController {
 
@@ -46,6 +47,13 @@ class ConnectController {
     $mail_address = $_POST["mail_address"];
     $model = new UpdateData;
     $items = $model->update($employee_id,$name,$furigana,$birthday,$department_cd,$address,$phone_num,$mail_address);
+    return $items;
+  }
+
+  public function recChk(){
+    $id = $_POST["employee_id"];
+    $model = new RecChk;
+    $items = $model->recChk($id);
     return $items;
   }
 

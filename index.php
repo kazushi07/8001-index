@@ -32,29 +32,44 @@
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">社員番号</label>                  
                     <?php
+                      //エラーメッセージに表示するために社員番号を取得
+                      $employee_id = $_POST["employee_id"];
+
                       //primary key　employee_id　で取得する
-                      if(!empty($_POST["employee_id"])){
-                        try{
-                            $result = $connect_controller->selectEmployee();
+                      if(!empty($employee_id)){
+                        //レコード存在チェック
+                        try{$result = $connect_controller->recChk();                          
+                          if($result > 0){
+                            try{
+                                //データ取得
+                                $result = $connect_controller->selectEmployee();
+                              
+                                foreach ($result as $val){
+                                    $employee_id = $val['employee_id'];                        
+                                    $name = $val['name'];
+                                    $furigana = $val['furigana'];
+                                    $birthday = $val['birthday'];
+                                    $department_cd = $val['department_cd'];
+                                    $address = $val['address'];
+                                    $phone_num = $val['phone_num'];
+                                    $mail_address = $val['mail_address'];
+                                }
 
-                            foreach ($result as $val){
-                                $employee_id = $val['employee_id'];                        
-                                $name = $val['name'];
-                                $furigana = $val['furigana'];
-                                $birthday = $val['birthday'];
-                                $department_cd = $val['department_cd'];
-                                $address = $val['address'];
-                                $phone_num = $val['phone_num'];
-                                $mail_address = $val['mail_address'];
-                            }
-
-                            } catch (PDOException $e){
-                            $warn_msg = $e->getMessage();
-                            echo($warn_msg);
+                              } catch (PDOException $e){
+                              $warn_msg = $e->getMessage();
+                              echo($warn_msg);
+                          }
+                          }else{
+                            $text = $employee_id . '<br> は存在しない社員番号です。<br> お手数ですがもう一度ご入力ください';
+                            echo($text);
+                          }
+                        } catch (PDOException $e){
+                          $warn_msg = $e->getMessage();
+                          echo($warn_msg);
                         }
                       }
                     ?>
-                  <input type="text" name="employee_id" placeholder="4桁の社員番号を入力" value = "<?php echo $employee_id;?>">
+                  <input type="text" name = "employee_id" placeholder = "4桁の社員番号を入力" value = "<?php echo $employee_id;?>">
                   <input type="submit" value="表示">
               </div>
               <div class="info-content">
