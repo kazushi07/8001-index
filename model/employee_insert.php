@@ -18,7 +18,7 @@
           , mail_address
       ) 
       VALUES ("
-          . $employee_id
+          .$employee_id
           . ", ' "
           . $name
           . "' , ' "
