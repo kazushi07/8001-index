@@ -51,7 +51,11 @@
                                     $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
                                     $department_cd = $val['department_cd'];
                                     $address = $val['address'];
-                                    $phone_num = $val['phone_num'];
+                                    //電話番号を分割してハイフン挿入
+                                    $phone_num_fwd = substr($val['phone_num'], 0, 3);
+                                    $phone_num_middle = substr($val['phone_num'], 3, 4);
+                                    $phone_num_last = substr($val['phone_num'], 6, 4);
+                                    $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
                                     $mail_address = $val['mail_address'];
                                 }
 
