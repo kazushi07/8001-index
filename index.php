@@ -48,7 +48,7 @@
                                     $employee_id = $val['employee_id'];                        
                                     $name = $val['name'];
                                     $furigana = $val['furigana'];
-                                    $birthday = $val['birthday'];
+                                    $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
                                     $department_cd = $val['department_cd'];
                                     $address = $val['address'];
                                     $phone_num = $val['phone_num'];
@@ -80,7 +80,7 @@
               </div>
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">生年月日</label>
-                  <input type="text" name = "birthday" value = <?php echo $birthday;?>>
+                  <input type="text" name = "birthday" value = <?php echo $birthday; ?>>
               </div>
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">部署CD</label>
