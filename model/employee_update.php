@@ -5,6 +5,12 @@
   {
     //DBに接続してデータを登録する
     public function update($employee_id,$name,$furigana,$birthday,$department_cd,$address,$phone_num,$mail_address){
+      
+      //DB登録前に電話番号のハイフンを削除する
+      echo($phone_num. "<br>");
+      $phone_num = str_replace('-', '', $phone_num);
+      echo($phone_num);
+
       $sql = "
       UPDATE m_employee
       SET   name = '" . $name . "' 
@@ -16,7 +22,7 @@
           , mail_address = '" . $mail_address . "'
           WHERE employee_id = " . $employee_id . "
       ";
-
+      echo($sql);
       $items = $this->pdo()->query($sql);
       return $items;      
     }
