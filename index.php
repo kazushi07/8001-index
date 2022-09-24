@@ -147,8 +147,7 @@
               if (isset($_POST['update'])) {
                   try{
                     $connect_controller->updateEmployee();
-                    $result = "更新しました";
-                    echo($result);
+                    $text = "更新しました";                    
                   } catch (PDOException $e){
                     $warn_msg = $e->getMessage();
                   }
@@ -188,12 +187,14 @@
                   document.forms[0].mail_address.value = "";
                 }
                </script>
-                <div class="warn-cells">
+                <div class="msg-cells">
                   <?php 
-                  if(!empty($text)){
-                    echo $text;
-                  }
+                    if(!empty($text)){
+                      echo $text;
+                    }
                   ?>
+                </div>
+                <div class="warn-cells">
                   <?php                 
                     if(!empty($warn_msg)){
                       echo("<br>エラーが発生しました、クリアボタンを押してください<br>");
