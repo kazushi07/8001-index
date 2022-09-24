@@ -20,7 +20,7 @@
           , mail_address = '" . $mail_address . "'
           WHERE employee_id = " . $employee_id . "
       ";
-      echo($sql);
+      // echo($sql);
       $items = $this->pdo()->query($sql);
       return $items;      
     }
