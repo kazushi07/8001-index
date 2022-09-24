@@ -32,8 +32,11 @@
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">社員番号</label>                  
                     <?php
-                      //エラーメッセージに表示するために社員番号を取得
-                      $employee_id = $_POST["employee_id"];
+                      //初回読み込み時のundefined error回避
+                      if(isset($_POST['employee_id'])){
+                        //エラーメッセージに表示するために社員番号を取得
+                        $employee_id = $_POST["employee_id"];
+                      }
 
                       //primary key　employee_id　で取得する
                       if(!empty($employee_id)){
