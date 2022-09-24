@@ -5,6 +5,7 @@ require_once('model\employee_delete.php');
 require_once('model\employee_insert.php');
 require_once('model\employee_update.php');
 require_once('model\exits_check.php');
+require_once('model\employee_showdpt.php');
 
 class ConnectController {
 
@@ -54,6 +55,13 @@ class ConnectController {
     $id = $_POST["employee_id"];
     $model = new RecChk;
     $items = $model->recChk($id);
+    return $items;
+  }
+
+  public function showdpt(){
+    $id = $_POST["department_cd"];
+    $model = new ShowDptName;
+    $items = $model->showdpt($id);
     return $items;
   }
 

@@ -12,6 +12,7 @@
   $address = "";
   $phone_num = "";
   $mail_address = "";
+  $department_name = "";
 
   $warn_msg = "";
 
@@ -63,9 +64,10 @@
                                 }
 
                               } catch (PDOException $e){
-                              $warn_msg = $e->getMessage();
-                              echo($warn_msg);
+                              $warn_msg = $e->getMessage();                              
                               }
+
+
                           }else{
                             $text = '<br>' . $employee_id . 'は存在しない社員番号です。<br>お手数ですがもう一度ご入力ください';
                           }
@@ -92,7 +94,22 @@
                   <label for="" class="lbl-memberInfo">部署CD</label>
                   <input type="text" name = "department_cd" value = <?php echo $department_cd;?>>
                   
-                  <!-- <label for="" id="lbl-busyo">部署名表示</label> -->
+                  <label for="" id = "lbl-busyo">部署:</label><?php echo $department_name;?>
+                  <?php
+                  //部署名取得
+                    if(!empty($department_cd)){
+                      try{
+                        $result = $connect_controller->showdpt();
+                        foreach ($result as $val){
+                          $department_name = $val['department_name'];
+                          echo($department_name);
+                        }
+                      } catch (PDOException $e){
+                      $warn_msg = $e->getMessage();
+                      echo($warn_msg);
+                      }
+                    }
+                  ?>                  
               </div>
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">住 所</label>
