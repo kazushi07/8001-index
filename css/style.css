@@ -48,3 +48,7 @@ nav{
 .clear_button{
     margin-top:10px;
 }
+
+.warn-cells{
+    color: orangered;
+}

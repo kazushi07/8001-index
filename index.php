@@ -65,10 +65,9 @@
                               } catch (PDOException $e){
                               $warn_msg = $e->getMessage();
                               echo($warn_msg);
-                          }
+                              }
                           }else{
-                            $text = $employee_id . '<br> は存在しない社員番号です。<br> お手数ですがもう一度ご入力ください';
-                            echo($text);
+                            $text = '<br>' . $employee_id . 'は存在しない社員番号です。<br>お手数ですがもう一度ご入力ください';
                           }
                         } catch (PDOException $e){
                           $warn_msg = $e->getMessage();
@@ -107,8 +106,7 @@
                   <label for="" class="lbl-memberInfo">メールアドレス</label>
                   <input type="text" name = "mail_address" value = <?php echo $mail_address;?>>
               </div>
-              <div class="warn-cells"><label for="" id="lbl-warn"></label>
-              </div>
+
             </div>
         </div>
         <div class="btn-wrapper">
@@ -122,8 +120,6 @@
                       $result = "登録しました";
                     } catch (PDOException $e){
                       $warn_msg = $e->getMessage();
-                      echo("エラーが発生しました、クリアボタンを押してください");
-                      echo($warn_msg);
                     }
                 }
               ?>
@@ -135,9 +131,9 @@
                   try{
                     $connect_controller->updateEmployee();
                     $result = "更新しました";
+                    echo($result);
                   } catch (PDOException $e){
-                    echo $e->getMessage();
-                    echo("エラーが発生しました、クリアボタンを押してください");
+                    $warn_msg = $e->getMessage();
                   }
                 }
               ?>
@@ -150,7 +146,7 @@
                       $connect_controller->deleteEmployee();
                       echo("データを削除しました、クリアボタンを押してください");
                     } catch (PDOException $e){
-                      echo $e->getMessage();
+                      $warn_msg = $e->getMessage();
                     }
                   }
                 }                
@@ -175,6 +171,19 @@
                   document.forms[0].mail_address.value = "";
                 }
                </script>
+                <div class="warn-cells">
+                  <?php 
+                  if(!empty($text)){
+                    echo $text;
+                  }
+                  ?>
+                  <?php                 
+                    if(!empty($warn_msg)){
+                      echo("<br>エラーが発生しました、クリアボタンを押してください<br>");
+                      echo $warn_msg;
+                    }
+                  ?>
+                </div>
          </div>
         </div>
       </form>
