@@ -1,7 +1,9 @@
 <?php
   //selectクラスを呼び出し
   require_once('Controller\Connect.php');
+  require_once('function\function.php');  
   $connect_controller = new ConnectController();
+  $common_function = new CommonFunction();
 
   //表示用変数初期化
   $employee_id = "";
@@ -16,6 +18,91 @@
 
   $warn_msg = "";
 
+  //=====================================================
+  //CRUD処理
+  //=====================================================
+  //入力された社員番号の確保
+  if(isset($_POST['employee_id'])){
+    $employee_id = $_POST["employee_id"];
+  }
+
+  //表示ボタン押下＋社員番号のemptyチェック
+  if(isset($_POST['show']) && (!empty($employee_id))){
+    //レコード存在チェック
+    try{$result = $connect_controller->recChk();                          
+      if($result > 0){
+            //データ取得
+            $result = $connect_controller->selectEmployee();          
+            foreach ($result as $val){
+                $employee_id = $val['employee_id'];                        
+                $name = $val['name'];
+                $furigana = $val['furigana'];
+                $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
+                $department_cd = $val['department_cd'];
+                $address = $val['address'];
+                //電話番号を分割してハイフン挿入,ただしスマホのみ
+                $phone_num_fwd = substr($val['phone_num'], 0, 3);
+                $phone_num_middle = substr($val['phone_num'], 3, 4);
+                $phone_num_last = substr($val['phone_num'], 7, 4);                                    
+                $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
+                $mail_address = $val['mail_address'];
+            }
+      }else{
+        $text = '<br>' . $employee_id . 'は存在しない社員番号です。<br>お手数ですがもう一度ご入力ください';
+      }
+    } catch (PDOException $e){
+      $warn_msg = $e->getMessage();
+      echo($warn_msg);
+    }
+  }
+  //insert処理  
+  if (isset($_POST['insert'])) {
+    try{
+      $connect_controller->insertEmployee();
+      $result = $connect_controller->selectEmployee();
+      $text = "登録しました";
+      foreach ($result as $val){
+        $employee_id = $val['employee_id'];                  
+        $name = $val['name'];                      
+        $furigana = $val['furigana'];
+        $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
+        $department_cd = $val['department_cd'];
+        $address = $val['address'];
+        //電話番号を分割してハイフン挿入,ただしスマホのみ
+        $phone_num_fwd = substr($val['phone_num'], 0, 3);
+        $phone_num_middle = substr($val['phone_num'], 3, 4);
+        $phone_num_last = substr($val['phone_num'], 7, 4);                                    
+        $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
+        $mail_address = $val['mail_address'];
+      }    } catch (PDOException $e){
+      $warn_msg = $e->getMessage();
+    }
+  }
+
+  //update処理
+  if (isset($_POST['update'])) {
+    try{
+      $connect_controller->updateEmployee();
+      $result = $connect_controller->selectEmployee();
+      $text = "更新しました";
+      foreach ($result as $val){
+        $employee_id = $val['employee_id'];                  
+        $name = $val['name'];                      
+        $furigana = $val['furigana'];
+        $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
+        $department_cd = $val['department_cd'];
+        $address = $val['address'];
+        //電話番号を分割してハイフン挿入,ただしスマホのみ
+        $phone_num_fwd = substr($val['phone_num'], 0, 3);
+        $phone_num_middle = substr($val['phone_num'], 3, 4);
+        $phone_num_last = substr($val['phone_num'], 7, 4);                                    
+        $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
+        $mail_address = $val['mail_address'];
+      }
+    } catch (PDOException $e){
+      $warn_msg = $e->getMessage();
+    }
+  }
 ?>
 
 <html>
@@ -31,58 +118,14 @@
         <div class="info-wrapper">
             <div class="info-contents">
               <div class="info-content">
-                  <label for="" class="lbl-memberInfo">社員番号</label>                  
-                    <?php
-                      //初回読み込み時のundefined error回避
-                      if(isset($_POST['employee_id'])){
-                        //エラーメッセージに表示するために社員番号を取得
-                        $employee_id = $_POST["employee_id"];
-                      }
-
-                      //primary key　employee_id　で取得する
-                      if(!empty($employee_id)){
-                        //レコード存在チェック
-                        try{$result = $connect_controller->recChk();                          
-                          if($result > 0){
-                            try{
-                                //データ取得
-                                $result = $connect_controller->selectEmployee();
-                              
-                                foreach ($result as $val){
-                                    $employee_id = $val['employee_id'];                        
-                                    $name = $val['name'];
-                                    $furigana = $val['furigana'];
-                                    $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
-                                    $department_cd = $val['department_cd'];
-                                    $address = $val['address'];
-                                    //電話番号を分割してハイフン挿入,ただしスマホのみ
-                                    $phone_num_fwd = substr($val['phone_num'], 0, 3);
-                                    $phone_num_middle = substr($val['phone_num'], 3, 4);
-                                    $phone_num_last = substr($val['phone_num'], 7, 4);                                    
-                                    $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
-                                    $mail_address = $val['mail_address'];
-                                }
-
-                              } catch (PDOException $e){
-                              $warn_msg = $e->getMessage();                              
-                              }
-
-
-                          }else{
-                            $text = '<br>' . $employee_id . 'は存在しない社員番号です。<br>お手数ですがもう一度ご入力ください';
-                          }
-                        } catch (PDOException $e){
-                          $warn_msg = $e->getMessage();
-                          echo($warn_msg);
-                        }
-                      }
-                    ?>
-                  <input type="text" name = "employee_id" placeholder = "4桁の社員番号を入力" value = "<?php echo $employee_id;?>">
-                  <input type="submit" value="表示">
+                  <label for = "" class="lbl-memberInfo">社員番号</label>
+                  <input type = "text" name = "employee_id" placeholder = "4桁の社員番号を入力" value = "<?php echo $employee_id;?>">
+                  <input type = "submit" value = "表示" name = "show">
               </div>
               <div class="info-content">
-                  <label for="" class="lbl-memberInfo">氏名</label>
-                  <input type="text" name = "name" value = "<?php echo $name;?>">
+                  <label for = "" class = "lbl-memberInfo">氏名</label>                  
+                  <input type="text" name = "name" 
+                   value = "<?php echo $name;?>">
                   <label for="">フリガナ</label>
                   <input type="text" name = "furigana" value = "<?php echo $furigana;?>">
               </div>
@@ -93,23 +136,21 @@
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">部署CD</label>
                   <input type="text" name = "department_cd" value = <?php echo $department_cd;?>>
-                  
-                  <label for="" id = "lbl-busyo">部署:</label><?php echo $department_name;?>
-                  <?php
+                  <!-- <?php
                   //部署名取得
                     if(!empty($department_cd)){
                       try{
                         $result = $connect_controller->showdpt();
                         foreach ($result as $val){
                           $department_name = $val['department_name'];
-                          echo($department_name);
                         }
                       } catch (PDOException $e){
                       $warn_msg = $e->getMessage();
                       echo($warn_msg);
                       }
                     }
-                  ?>                  
+                  ?> -->
+                  <label for="" id = "lbl-busyo">部署:</label><?php echo $department_name;?>
               </div>
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">住 所</label>
@@ -123,36 +164,12 @@
                   <label for="" class="lbl-memberInfo">メールアドレス</label>
                   <input type="text" name = "mail_address" value = <?php echo $mail_address;?>>
               </div>
-
             </div>
         </div>
         <div class="btn-wrapper">
             <div class="btn-contents">
               <button type="submit" name="insert">登録</button>
-              <?php 
-              //insert処理  
-                if (isset($_POST['insert'])) {
-                    try{
-                      $connect_controller->insertEmployee();
-                      $result = "登録しました";
-                    } catch (PDOException $e){
-                      $warn_msg = $e->getMessage();
-                    }
-                }
-              ?>
-
-              <button type="submit" name="update">更新</button>
-              <?php
-              //update処理
-              if (isset($_POST['update'])) {
-                  try{
-                    $connect_controller->updateEmployee();
-                    $text = "更新しました";                    
-                  } catch (PDOException $e){
-                    $warn_msg = $e->getMessage();
-                  }
-                }
-              ?>
+              <button type="submit" name="update" formaction="">更新</button>              
               <button type="submit" name="delete">データ削除</button>
               <?php 
               //削除ボタン 
