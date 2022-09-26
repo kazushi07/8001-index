@@ -55,8 +55,32 @@
       echo($warn_msg);
     }
   }
-  //insert処理  
-  if (isset($_POST['insert'])) {
+  
+//updateとinsertで処理を分岐する
+if (isset($_POST['register'])) {
+  //先にレコードチェック
+  $result = $connect_controller->recChk();
+  if($result > 0){    
+    //update処理
+    $connect_controller->updateEmployee();
+    $result = $connect_controller->selectEmployee();
+    $text = "更新しました";
+    foreach ($result as $val){
+      $employee_id = $val['employee_id'];                  
+      $name = $val['name'];                      
+      $furigana = $val['furigana'];
+      $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
+      $department_cd = $val['department_cd'];
+      $address = $val['address'];
+      //電話番号を分割してハイフン挿入,ただしスマホのみ
+      $phone_num_fwd = substr($val['phone_num'], 0, 3);
+      $phone_num_middle = substr($val['phone_num'], 3, 4);
+      $phone_num_last = substr($val['phone_num'], 7, 4);                                    
+      $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
+      $mail_address = $val['mail_address'];
+    }
+  } else {
+    //insert処理
     try{
       $connect_controller->insertEmployee();
       $result = $connect_controller->selectEmployee();
@@ -74,35 +98,12 @@
         $phone_num_last = substr($val['phone_num'], 7, 4);                                    
         $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
         $mail_address = $val['mail_address'];
-      }    } catch (PDOException $e){
-      $warn_msg = $e->getMessage();
-    }
-  }
-
-  //update処理
-  if (isset($_POST['update'])) {
-    try{
-      $connect_controller->updateEmployee();
-      $result = $connect_controller->selectEmployee();
-      $text = "更新しました";
-      foreach ($result as $val){
-        $employee_id = $val['employee_id'];                  
-        $name = $val['name'];                      
-        $furigana = $val['furigana'];
-        $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
-        $department_cd = $val['department_cd'];
-        $address = $val['address'];
-        //電話番号を分割してハイフン挿入,ただしスマホのみ
-        $phone_num_fwd = substr($val['phone_num'], 0, 3);
-        $phone_num_middle = substr($val['phone_num'], 3, 4);
-        $phone_num_last = substr($val['phone_num'], 7, 4);                                    
-        $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
-        $mail_address = $val['mail_address'];
-      }
+      }    
     } catch (PDOException $e){
       $warn_msg = $e->getMessage();
     }
   }
+}
 ?>
 
 <html>
@@ -168,8 +169,7 @@
         </div>
         <div class="btn-wrapper">
             <div class="btn-contents">
-              <button type="submit" name="insert">登録</button>
-              <button type="submit" name="update" formaction="">更新</button>              
+              <button type="submit" name="register">登録</button>              
               <button type="submit" name="delete">データ削除</button>
               <?php 
               //削除ボタン 
@@ -177,20 +177,14 @@
                   if(!empty($_POST["employee_id"])){
                     try{
                       $connect_controller->deleteEmployee();
-                      echo("データを削除しました、クリアボタンを押してください");
+                      $text = "データを削除しました、クリアボタンを押してください";
                     } catch (PDOException $e){
                       $warn_msg = $e->getMessage();
                     }
                   }
                 }                
               ?>
-              <input type = submit name = "clear" class = "clear_button" value='クリア' onClick="jClear();">
-                <?php 
-                  //クリアボタン押下時にechoメッセージを消去
-                  if (isset($_POST['clear'])) {
-                        echo("");
-                  }
-                ?>      
+              <input type = submit name = "clear" class = "clear_button" value='クリア' onClick="jClear();">                
               <script>
                 //クリアして初期値に戻す
                 function jClear() {

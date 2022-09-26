@@ -7,8 +7,7 @@
     //DBに接続してデータを削除する
     public function delete($employee_id){        
       $sql = 'DELETE FROM m_employee WHERE employee_id = ' . $employee_id;
-      $items = $this->pdo()->query($sql);
-      var_dump($sql);
+      $items = $this->pdo()->query($sql);      
       return $items;
     }
   }
