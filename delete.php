@@ -17,17 +17,16 @@
   $department_name = "";
 
   $warn_msg = "";
-
+  
   //=====================================================
   //CRUD処理
   //=====================================================
-  //入力された社員番号の確保
-  if(isset($_POST['employee_id'])){
-    $employee_id = $_POST["employee_id"];
-  }
 
-  //表示ボタン押下＋社員番号のemptyチェック
-  if(isset($_POST['show']) && (!empty($employee_id))){
+  if(!empty($_GET['employee_id'])){
+    $employee_id = $_GET["employee_id"];    
+  }
+  //GETしたデータをform上に表示する
+  if(!empty($_GET['employee_id'])){
     //レコード存在チェック
     try{$result = $connect_controller->recChk();                          
       if($result > 0){
@@ -52,58 +51,21 @@
       }
     } catch (PDOException $e){
       $warn_msg = $e->getMessage();
-      echo($warn_msg);
     }
   }
-  
-//updateとinsertで処理を分岐する
-if (isset($_POST['register'])) {
-  //先にレコードチェック
-  $result = $connect_controller->recChk();
-  if($result > 0){    
-    //update処理
-    $connect_controller->updateEmployee();
-    $result = $connect_controller->selectEmployee();
-    $text = "更新しました";
-    foreach ($result as $val){
-      $employee_id = $val['employee_id'];                  
-      $name = $val['name'];                      
-      $furigana = $val['furigana'];
-      $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
-      $department_cd = $val['department_cd'];
-      $address = $val['address'];
-      //電話番号を分割してハイフン挿入,ただしスマホのみ
-      $phone_num_fwd = substr($val['phone_num'], 0, 3);
-      $phone_num_middle = substr($val['phone_num'], 3, 4);
-      $phone_num_last = substr($val['phone_num'], 7, 4);                                    
-      $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
-      $mail_address = $val['mail_address'];
+
+  //削除ボタン押下時
+    if (isset($_POST['delete'])) {
+      if(!empty($employee_id)){
+        $_POST['employee_id'] = $employee_id;
+        try{
+          $connect_controller->deleteEmployee();
+          $text = "データを削除しました。戻るボタンを押してください";          
+        } catch (PDOException $e){
+          $warn_msg = $e->getMessage();
+        }
+      }
     }
-  } else {
-    //insert処理
-    try{
-      $connect_controller->insertEmployee();
-      $result = $connect_controller->selectEmployee();
-      $text = "登録しました";
-      foreach ($result as $val){
-        $employee_id = $val['employee_id'];                  
-        $name = $val['name'];                      
-        $furigana = $val['furigana'];
-        $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
-        $department_cd = $val['department_cd'];
-        $address = $val['address'];
-        //電話番号を分割してハイフン挿入,ただしスマホのみ
-        $phone_num_fwd = substr($val['phone_num'], 0, 3);
-        $phone_num_middle = substr($val['phone_num'], 3, 4);
-        $phone_num_last = substr($val['phone_num'], 7, 4);                                    
-        $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
-        $mail_address = $val['mail_address'];
-      }    
-    } catch (PDOException $e){
-      $warn_msg = $e->getMessage();
-    }
-  }
-}
 ?>
 
 
@@ -116,28 +78,28 @@ if (isset($_POST['register'])) {
 <body>
   <div class="field_body">
     <h1 class="top_label">社員マスタメンテナンス</h1>
-      <form action="index.php" method="POST">
+    <p class="text-confirm">以下の投稿を削除します。<br>よろしければ「データ削除」ボタンを押してください。</p>
+      <form action="" method="POST">
         <div class="info-wrapper">
             <div class="info-contents">
               <div class="info-content">
                   <label for = "" class="lbl-memberInfo">社員番号</label>
-                  <input type = "text" name = "employee_id" placeholder = "4桁の社員番号を入力" value = "<?php echo $employee_id;?>">
+                  <input type = "text" name = "employee_id" value = "<?php echo $employee_id;?>" disabled="disabled">
                   <input type = "submit" value = "表示" name = "show">
               </div>
               <div class="info-content">
                   <label for = "" class = "lbl-memberInfo">氏名</label>                  
-                  <input type="text" name = "name" 
-                   value = "<?php echo $name;?>">
+                  <input type="text" name = "name" value = "<?php echo $name;?>" disabled="disabled">
                   <label for="">フリガナ</label>
-                  <input type="text" name = "furigana" value = "<?php echo $furigana;?>">
+                  <input type="text" name = "furigana" value = "<?php echo $furigana;?>" disabled="disabled">
               </div>
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">生年月日</label>
-                  <input type="text" name = "birthday" value = <?php echo $birthday; ?>>
+                  <input type="text" name = "birthday" value = "<?php echo $birthday; ?>" disabled="disabled">
               </div>
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">部署CD</label>
-                  <input type="text" name = "department_cd" value = <?php echo $department_cd;?>>
+                  <input type="text" name = "department_cd" value = "<?php echo $department_cd;?>" disabled="disabled">
                   <!-- <?php
                   //部署名取得
                     if(!empty($department_cd)){
@@ -156,37 +118,28 @@ if (isset($_POST['register'])) {
               </div>
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">住 所</label>
-                  <input type="text" name = "address" value = <?php echo $address;?>>
+                  <input type="text" name = "address" value = "<?php echo $address;?>" disabled="disabled">
               </div>
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">電話番号</label>
-                  <input type="text" name = "phone_num" value = <?php echo $phone_num;?>>
+                  <input type="text" name = "phone_num" value = "<?php echo $phone_num;?>" disabled="disabled">
               </div>
               <div class="info-content">
                   <label for="" class="lbl-memberInfo">メールアドレス</label>
-                  <input type="text" name = "mail_address" value = <?php echo $mail_address;?>>
+                  <input type="text" name = "mail_address" value = "<?php echo $mail_address;?>" disabled="disabled">
               </div>
             </div>
         </div>
         <div class="btn-wrapper">
             <div class="btn-contents">
-              <button type="submit" name="register">登録</button>              
-              <a href="delete.php?employee_id=<?php echo $employee_id;?>">削除</a>
-              <input type = submit name = "clear" class = "clear_button" value='クリア' onClick="jClear();">                
-              <script>
-                //クリアして初期値に戻す
-                function jClear() {
-                  document.forms[0].employee_id.value = "";
-                  document.forms[0].name.value = "";
-                  document.forms[0].furigana.value = "";
-                  document.forms[0].birthday.value = "";
-                  document.forms[0].department_cd.value = "";
-                  document.forms[0].address.value = "";
-                  document.forms[0].phone_num.value = "";
-                  document.forms[0].mail_address.value = "";
-                }
-                
-               </script>
+              <button type="submit" name="delete" >データ削除</button>
+              <input type = "submit" name = "return" value='戻る'>
+              <?php 
+                if (isset($_POST['return'])) {
+                  echo("return");
+                  header("location: index.php");
+                }                
+              ?>
                 <div class="msg-cells">
                   <?php 
                     if(!empty($text)){

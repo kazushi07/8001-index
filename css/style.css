@@ -56,3 +56,11 @@ nav{
 .warn-cells{
     color: orangered;
 }
+
+/* 削除ページのメッセージ */
+.text-confirm {
+	margin-bottom: 20px;
+	font-size: 86%;
+	line-height: 1.6em;
+    color: orangered;
+}

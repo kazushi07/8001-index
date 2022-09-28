@@ -1,0 +1,25 @@
+【１】
+@Connect.phpにおいて、削除ページから削除する際にUndefined errorが出てしまうことを回避
+  public function selectEmployee(){
+    //削除ページ実装に伴い処理を分岐
+    // if($_SERVER["REQUEST_METHOD"] == "POST"){
+    //   $id = $_POST["employee_id"];
+    // }else{
+    //   $id = $_GET["employee_id"];
+    // }
+    if(isset($_POST["employee_id"])){
+      $id = $_POST["employee_id"];
+    }
+    if(isset($_GET["employee_id"])){
+      $id = $_GET["employee_id"];
+    }
+    $model = new SelectData;
+    $items = $model->select($id);
+    return $items;
+  }
+
+※参考
+PHP | $_GETや$_POSTでのUndefined array keyエラーを解決する方法
+https://1-notes.com/php-error-undefined-array-key-in-get-and-post/
+
+【２】

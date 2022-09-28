@@ -10,7 +10,13 @@ require_once('model\employee_showdpt.php');
 class ConnectController {
 
   public function selectEmployee(){
-    $id = $_POST["employee_id"];
+    //削除ページ実装に伴い処理を分岐
+    if(isset($_POST["employee_id"])){
+      $id = $_POST["employee_id"];
+    }
+    if(isset($_GET["employee_id"])){
+      $id = $_GET["employee_id"];
+    }
     $model = new SelectData;
     $items = $model->select($id);
     return $items;
@@ -52,7 +58,13 @@ class ConnectController {
   }
 
   public function recChk(){
-    $id = $_POST["employee_id"];
+    //削除ページ実装に伴い処理を分岐
+    if(isset($_POST["employee_id"])){
+      $id = $_POST["employee_id"];
+    }
+    if(isset($_GET["employee_id"])){
+      $id = $_GET["employee_id"];
+    }
     $model = new RecChk;
     $items = $model->recChk($id);
     return $items;
