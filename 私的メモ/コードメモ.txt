@@ -1,0 +1,12 @@
+テキストボックスの値をJavaScriptで取得する
+            <script type="text/javascript">
+              document.getElementById('btn_show').addEventListener('click', function() {
+                var str = document.getElementById('employee_id').value; /* 入力値 */
+                if (str.match(/[^0-9]/g)) {
+                  alert(str.match(/[^0-9]/g) + "\n\n社員番号は4桁の数値で入力してください");
+                  return false;
+                }
+                alert("社員番号を確認しました");
+                return true;
+              });
+            </script>
