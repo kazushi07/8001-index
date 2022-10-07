@@ -1,9 +1,9 @@
 <?php
 //selectクラスを呼び出し
 require_once('Controller\Connect.php');
-require_once('function\function.php');
+require_once('Controller\Function.php');
 $connect_controller = new ConnectController();
-$common_function = new CommonFunction();
+$common_function = new FunctionController();
 
 //表示用変数初期化
 $employee_id = "";
@@ -17,6 +17,7 @@ $mail_address = "";
 $department_name = "";
 
 $warn_msg = "";
+$warn_content = "";
 
 //=====================================================
 //CRUD処理
@@ -26,34 +27,40 @@ if (isset($_POST['employee_id'])) {
   $employee_id = $_POST["employee_id"];
 }
 
-//表示ボタン押下＋社員番号のemptyチェック、数値チェック
-if (isset($_POST['show']) && (!empty($employee_id)) && (is_numeric($employee_id))) {
-  //レコード存在チェック
-  try {
+//表示ボタン押下＋社員番号のemptyチェック
+if (isset($_POST['show']) && (!empty($employee_id))) {
+  //桁数と数値入力であるかをチェック
+  $input_chk = $common_function->inputCheck($employee_id);
+  if ($input_chk === true) {
+    //レコード存在チェック
     $result = $connect_controller->recChk();
-    if ($result > 0) {
-      //データ取得
-      $result = $connect_controller->selectEmployee();
-      foreach ($result as $val) {
-        $employee_id = $val['employee_id'];
-        $name = $val['name'];
-        $furigana = $val['furigana'];
-        $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
-        $department_cd = $val['department_cd'];
-        $address = $val['address'];
-        //電話番号を分割してハイフン挿入,ただしスマホのみ
-        $phone_num_fwd = substr($val['phone_num'], 0, 3);
-        $phone_num_middle = substr($val['phone_num'], 3, 4);
-        $phone_num_last = substr($val['phone_num'], 7, 4);
-        $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
-        $mail_address = $val['mail_address'];
+    try {
+      if ($result > 0) {
+        //データ取得
+        $result = $connect_controller->selectEmployee();
+        foreach ($result as $val) {
+          $employee_id = $val['employee_id'];
+          $name = $val['name'];
+          $furigana = $val['furigana'];
+          $birthday = str_replace('-', '/', $val['birthday']); //ハイフンをスラッシュに置き換え
+          $department_cd = $val['department_cd'];
+          $address = $val['address'];
+          //電話番号を分割してハイフン挿入,ただしスマホのみ
+          $phone_num_fwd = substr($val['phone_num'], 0, 3);
+          $phone_num_middle = substr($val['phone_num'], 3, 4);
+          $phone_num_last = substr($val['phone_num'], 7, 4);
+          $phone_num = $phone_num_fwd . "-" . $phone_num_middle . "-" . $phone_num_last;
+          $mail_address = $val['mail_address'];
+        }
+      } else {
+        $text = '<br>' . $employee_id . 'は存在しない社員番号です。<br>お手数ですがもう一度ご入力ください';
       }
-    } else {
-      $text = '<br>' . $employee_id . 'は存在しない社員番号です。<br>お手数ですがもう一度4桁の半角数字でご入力ください';
+    } catch (PDOException $e) {
+      $warn_msg = $e->getMessage();
+      echo ($warn_msg);
     }
-  } catch (PDOException $e) {
-    $warn_msg = $e->getMessage();
-    echo ($warn_msg);
+  }else{
+    $warn_content = "<p>社員番号は4桁の半角数字で入力してください<br>クリアボタンを押すか、社員番号を入力しなおしてください<>";
   }
 }
 
@@ -124,7 +131,7 @@ if (isset($_POST['register'])) {
         <div class="info-contents">
           <div class="info-content">
             <label for="" class="lbl-memberInfo">社員番号</label>
-            <input type="text" id = "employee_id" name="employee_id" placeholder="4桁の社員番号を入力" value="<?php echo $employee_id; ?>">
+            <input type="text" maxlength="4" id="employee_id" name="employee_id" placeholder="4桁の社員番号を入力" value="<?php echo $employee_id; ?>">
             <input type="submit" id="btn_show" value="表示" name="show">
           </div>
           <div class="info-content">
@@ -197,6 +204,9 @@ if (isset($_POST['register'])) {
           </div>
           <div class="warn-cells">
             <?php
+            if (!empty($warn_content)){
+              echo $warn_content;
+            }
             if (!empty($warn_msg)) {
               echo ("<br>エラーが発生しました、クリアボタンを押してください<br>");
               echo $warn_msg;
